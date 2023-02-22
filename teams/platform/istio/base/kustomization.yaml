@@ -3,3 +3,4 @@ kind: Kustomization
 resources:
 - ingress-gateway.yaml
 - istio-gateways-ns.yaml
+- tls-secret.yaml
