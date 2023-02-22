@@ -1,0 +1,38 @@
+apiVersion: argoproj.io/v1alpha1
+kind: ApplicationSet
+metadata:
+  name: gloo-mesh-addons
+  namespace: argocd
+spec:
+  generators:
+  - list:
+      elements:
+      - cluster: cluster1
+      - cluster: cluster2
+  template:
+    metadata:
+      name: 'gloo-mesh-addons-{{cluster}}'
+    spec:
+      project: bookinfo
+      sources:
+        - repoURL:  'https://github.com/lamadome/GlooOps-lamadome'
+          targetRevision: HEAD
+          ref: myRepo
+        - repoURL: 'https://storage.googleapis.com/gloo-mesh-enterprise/gloo-mesh-agent'
+          targetRevision: 2.2.4
+          chart: gloo-mesh-agent
+          helm:
+            valueFiles:
+              - $myRepo/teams/platform/gloo-mesh-addons/base/values.yaml
+      destination:
+        name: '{{cluster}}'
+        namespace: gloo-mesh-addons
+      syncPolicy:
+        automated:
+          prune: false
+          selfHeal: false
+        managedNamespaceMetadata:
+          labels: # The labels to set on the application namespace
+            istio.io/rev: 1-16
+        syncOptions:
+          - CreateNamespace=true
