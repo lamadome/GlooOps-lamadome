@@ -4,3 +4,4 @@ resources:
 - argo-app-workspacesettings.yaml
 - gateways-workspace.yaml
 - workspace-settings-global.yaml
+- bookinfo-workspace.yaml
